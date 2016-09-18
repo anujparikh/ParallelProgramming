@@ -2,15 +2,15 @@
 #include <string.h>
 #include <limits.h>
 
-int minHrs = INT_MAX;
+int minHoursForFinalRoute = INT_MAX;
 char minRouteCities[100];
 int citiesCostMatrix[100][100];
 
-void swapValuesInArray(char *x, char *y) {
-    char temp;
-    temp = *x;
-    *x = *y;
-    *y = temp;
+void swapValuesInArray(char *firstValue, char *secondValue) {
+    char tempChar;
+    tempChar = *firstValue;
+    *firstValue = *secondValue;
+    *secondValue = tempChar;
 }
 
 void computeAllPossibleRoutes(char *cities, int startingIndex, int endingIndex) {
@@ -23,9 +23,9 @@ void computeAllPossibleRoutes(char *cities, int startingIndex, int endingIndex) 
             cost += citiesCostMatrix[(cities[i] - 1) - '0'][(cities[i + 1] - 1) - '0'];
         } // calculating the total cost of the travel before destination city 0
         cost += citiesCostMatrix[cities[(strlen(cities) - 1)] - '1'][0]; // add cost for going back to destination 0
-        if (cost < minHrs) {
+        if (cost < minHoursForFinalRoute) {
             strcpy(minRouteCities, cities);
-            minHrs = cost;
+            minHoursForFinalRoute = cost;
         } // checking for the minimum cost for particular route
         printf("Total Cost for the route 1%s1: %d\n\n", cities, cost);
     } else {
@@ -66,7 +66,7 @@ int main() {
     int n = (int) strlen(cities);
     computeAllPossibleRoutes(cities, 0, n - 1);
     printf("*********************************************************************************************\n");
-    printf("Calculated minimum cost from all the options is %d for route 1%s1\n", minHrs, minRouteCities);
+    printf("Calculated minimum cost from all the options is %d for route 1%s1\n", minHoursForFinalRoute, minRouteCities);
     printf("*********************************************************************************************\n");
     return 0;
 }
