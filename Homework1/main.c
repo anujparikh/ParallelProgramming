@@ -42,12 +42,14 @@ int main() {
     FILE *inputFile;
     inputFile = fopen("input.txt", "r");
     fscanf(inputFile, "%d", &totalNumberOfCities);
+    printf("Total no of cities from input file: %d\n\n", totalNumberOfCities);
     for (i = 0; i < totalNumberOfCities; i++) {
         for (j = 0; j < totalNumberOfCities; j++) {
             fscanf(inputFile, "%d", &citiesCostMatrix[i][j]);
         }
     }
 
+    printf("Cost matrix: \n");
     for (i = 0; i < totalNumberOfCities; i++) {
         for (j = 0; j < totalNumberOfCities; j++) {
             printf("%d ", citiesCostMatrix[i][j]);
@@ -55,6 +57,8 @@ int main() {
         printf("\n");
     }
 
+    printf("\n");
+    printf("\n");
     int counter;
     char cities[totalNumberOfCities];
     strcpy(cities, "2");
@@ -67,6 +71,6 @@ int main() {
     computeAllPossibleRoutes(cities, 0, n - 1);
     printf("*********************************************************************************************\n");
     printf("Calculated minimum cost from all the options is %d for route 1%s1\n", minHoursForFinalRoute, minRouteCities);
-    printf("*********************************************************************************************\n");
+    printf("*********************************************************************************************\n\n\n");
     return 0;
 }
