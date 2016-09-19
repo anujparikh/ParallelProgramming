@@ -3,37 +3,83 @@
 #include <limits.h>
 
 int minHoursForFinalRoute = INT_MAX;
-char minRouteCities[100];
+int minRouteCities[100];
 int citiesCostMatrix[100][100];
 
-void swapValuesInArray(char *firstValue, char *secondValue) {
-    char tempChar;
-    tempChar = *firstValue;
-    *firstValue = *secondValue;
-    *secondValue = tempChar;
+void swapValuesInArray(int *arr, int i, int j) {
+    int temp;
+    temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
 }
 
-void computeAllPossibleRoutes(char *cities, int startingIndex, int endingIndex) {
+void calculateCostOfRouteAndCheckForMinCost(int *citiesRoute, int size) {
+    int cost = 0;
     int i;
-    if (startingIndex == endingIndex) {
-        int cost = 0;
-        printf("Staring new route of 1%s1\n", cities);
-        cost = citiesCostMatrix[0][(cities[0] - 1) - '0']; // initial cost from city 0
-        for (i = 0; i < strlen(cities) - 1; i++) {
-            cost += citiesCostMatrix[(cities[i] - 1) - '0'][(cities[i + 1] - 1) - '0'];
-        } // calculating the total cost of the travel before destination city 0
-        cost += citiesCostMatrix[cities[(strlen(cities) - 1)] - '1'][0]; // add cost for going back to destination 0
-        if (cost < minHoursForFinalRoute) {
-            strcpy(minRouteCities, cities);
-            minHoursForFinalRoute = cost;
-        } // checking for the minimum cost for particular route
-        printf("Total Cost for the route 1%s1: %d\n\n", cities, cost);
-    } else {
-        for (i = startingIndex; i <= endingIndex; i++) {
-            swapValuesInArray((cities + startingIndex), (cities + i));
-            computeAllPossibleRoutes(cities, startingIndex + 1, endingIndex);
-            swapValuesInArray((cities + startingIndex), (cities + i));
+    printf("Route: ");
+    for (i = 0; i < size; i++)
+        printf("%d, ", citiesRoute[i]);
+    printf("\n");
+
+    for (i = 0; i < size - 1; i++) {
+        cost += citiesCostMatrix[citiesRoute[i] - 1][citiesRoute[i + 1] - 1];
+    }
+    cost += citiesCostMatrix[citiesRoute[size - 1] - 1][0];
+    printf("Total Cost for the route: %d\n", cost);
+    printf("\n");
+    if (cost < minHoursForFinalRoute) {
+        for (i = 0; i < size; i++) {
+            minRouteCities[i] = citiesRoute[i];
         }
+        minHoursForFinalRoute = cost;
+    } // checking for the minimum cost for particular route
+}
+
+void computeAllPossibleRoutes(int totalNumberOfCities) {
+
+    int oArray[100];
+    int cArray[100];
+    int permutationArray[100];
+    int i, j, q, s;
+
+    // [P1:] Initialize: Cj ← 0 and Oj ← 1,for 1 ≤ j ≤n.
+    for (i = 0; i < totalNumberOfCities; i++) {
+        cArray[i] = 0;
+        oArray[i] = 1;
+        permutationArray[i] = i + 1;
+    }
+
+    while (1) {
+        // [P2:] Visit permutation (a1, a2, · · · , an).
+        calculateCostOfRouteAndCheckForMinCost(permutationArray, totalNumberOfCities);
+
+        //[P3:] j ← n and s ← 0
+        j = totalNumberOfCities - 1;
+        s = 0;
+
+        // [P4:] q ← Cj + Oj . If q < 0 go to P7; if q = j go to P6.
+        q = cArray[j] + oArray[j];
+
+        while (q < 0 || q == j) {
+            if (q == j) {
+
+                // [P6:] Terminate if j = 1; otherwise set s ← s + 1.
+                if (j == 1) {
+                    return;
+                } else
+                    s = s + 1;
+            }
+
+            // [P7:] Set oj ← −oj, j ← j − 1 and go back to P4.
+            oArray[j] = -oArray[j];
+            j = j - 1;
+            q = cArray[j] + oArray[j];
+        }
+
+        // [P5:] Swap aj−cj+s with aj−q+s. Then set cj ← q and return to P2.
+        swapValuesInArray(permutationArray, j - cArray[j] + s, j - q + s);
+
+        cArray[j] = q;
     }
 }
 
@@ -59,18 +105,14 @@ int main() {
 
     printf("\n");
     printf("\n");
-    int counter;
-    char cities[totalNumberOfCities];
-    strcpy(cities, "2");
-    char buffer[20];
-    for (counter = 2; counter < totalNumberOfCities; counter++) {
-        snprintf(buffer, 10, "%d", counter + 1);
-        strcat(cities, buffer);
-    }
-    int n = (int) strlen(cities);
-    computeAllPossibleRoutes(cities, 0, n - 1);
+
+    computeAllPossibleRoutes(totalNumberOfCities);
     printf("*********************************************************************************************\n");
-    printf("Calculated minimum cost from all the options is %d for route 1%s1\n", minHoursForFinalRoute, minRouteCities);
+    printf("Calculated minimum cost from all the options is %d for route: ", minHoursForFinalRoute);
+    for (i = 0; i < totalNumberOfCities; i++) {
+        printf("%d -> ", minRouteCities[i]);
+    }
+    printf("1\n");
     printf("*********************************************************************************************\n\n\n");
     return 0;
 }
