@@ -88,6 +88,9 @@ int main() {
     FILE *inputFile;
     inputFile = fopen("input.txt", "r");
     fscanf(inputFile, "%d", &totalNumberOfCities);
+    printf("\n\n***********************************\n");
+    printf("Travelling Salesman Problem\n");
+    printf("***********************************\n\n");
     printf("Total no of cities from input file: %d\n\n", totalNumberOfCities);
     for (i = 0; i < totalNumberOfCities; i++) {
         for (j = 0; j < totalNumberOfCities; j++) {
